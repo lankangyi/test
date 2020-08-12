@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>商品列表</title>
+</head>
+<div th:replace="fragment/js::js"></div>
+
+
+<!--自定义行中单元格 -->
+<script type="text/html" id="myCell">
+    <div class="layui-btn-group">
+        <button class="layui-btn layui-btn-xs layui-btn" lay-event='select'>查看更多信息</button>
+        <button class="layui-btn layui-btn-xs layui-btn-warm" lay-event='update'>修改</button>
+        <button class="layui-btn layui-btn-xs layui-btn-danger" lay-event='delete'>删除</button>
+    </div>
+</script>
+
+
+
+
+<body>
+
+<!--自定义修改表单-->
+<script type="text/html" id="updateGoodSForm">
+    <form class="layui-form" action="">
+        <div class="layui-form-item">
+            <label class="layui-form-label">商品标题</label>
+            <div class="layui-input-inline">
+                <input type="text" name="title" required lay-verify="required" placeholder="请输入标题"
+                       class="layui-input">
+            </div>
+        </div>
+
+        <div class="layui-form-item">
+            <div class="layui-input-block">
+                <button class="layui-btn" lay-submit lay-filter="commit">立即提交</button>
+            </div>
+        </div>
+    </form>
+</script>
+
+
+<table id="goodListTB" lay-filter="goodListTB"></table>
+<script th:inline="javascript" type="text/javascript">
+
+    let updateGoodsOpen;
+    //商品数据表格样式
+    layui.use(['table', 'layer', 'form'], function () {
+        let table = layui.table;
+        let layer = layui.layer;
+        let form = layui.form;
+
+        //第一个实例
+        let goodsTb = table.render({
+            elem: '#goodListTB'
+            , url: '/api/pages/back/good/ajaxGoodList' //数据接口
+            , page: true //开启分页
+            , cols: [[ //表头
+                {field: 'userId', type: 'checkbox', title: 'ID', width: 80, sort: true, fixed: 'left'}
+                , {field: 'goodsId', title: '商品ID', width: 80, sort: true, fixed: 'left'}
+                , {field: 'title', title: '商品标题', width: 150, edit: 'text'}
+                , {field: 'oldPrice', title: '原价', width: 80, sort: true}
+                , {field: 'nowPrice', title: '现价', width: 80}
+                , {field: 'xx', title: '商品详情', width: 177}
+                , {field: 'experience', title: '积分', width: 80, sort: true}
+                , {field: 'score', title: '评分', width: 80, sort: true}
+                , {field: 'classify', title: '职业', width: 80}
+                , {field: 'wealth', title: '操作', width: 150, templet: '#myCell'}
+            ]]
+            , done() {
+                layer.msg("加载完毕");
+            }
+        });
+
+        // ---------------------监听事件--------------------------
+
+        //监听行中工具条
+        table.on('tool(goodListTB)', function (obj) { //注：tool 是工具条事件名，test 是 table 原始容器的属性 lay-filter="对应的值"
+            var data = obj.data; //获得当前行数据
+            var layEvent = obj.event; //获得 lay-event 对应的值（也可以是表头的 event 参数对应的值）
+            var tr = obj.tr; //获得当前行 tr 的 DOM 对象（如果有的话）
+
+            switch (layEvent) {
+                case 'select':
+                    $.get('/api/pages/back/good/showGoodsInfo/' + data.goodsId, {}, function (res) {
+                        console.log(res);
+                    });
+                    break;
+                case 'update':
+                    updateGoodsOpen = layer.open({// 弹框之后，如遇到select标签，radio,checkbox之类，需要使用表单渲染
+                        type: 1,
+                        offset: '10px',
+                        area: 'fit-content',
+                        title: "修改货物信息表单",
+                        shadeClose: true,// 点击阴影部分是否关闭对话框
+                        content: $("#updateGoodSForm").html()  // 就是指的是要把哪段代码片段渲染到对话框之中
+                    });
+                    break;
+                case 'delete':
+                    break;
+            }
+        });
+
+        //监听表单提交
+        form.on('submit(commit)', function(data){
+            console.log(data);
+            $.post('/api/pages/back/good/updateGoods/', data.field, function (res) {
+                layer.layer(res)
+                goodsTb.reload();
+                layer.close(updateGoodsOpen);
+            });
+            return false; //阻止表单跳转。如果需要表单跳转，去掉这段即可。
+        });
+
+    });
+
+</script>
+</body>
+</html>

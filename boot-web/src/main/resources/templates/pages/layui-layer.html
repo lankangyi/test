@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>thymeleaf 语法简介</title>
+</head>
+<div th:replace="fragment/js::js"></div>
+<body>
+
+<button id="btn" class="layui-btn layui-btn-danger">我是危险的按钮</button>
+<style>
+    .layui-input-inline {
+        width: 220px;
+    }
+
+    .layui-input {
+        width: 220px;
+    }
+</style>
+<script type="text/html" id="addUserForm">
+    <div>
+        <form class="layui-form" action="">
+            <div class="layui-form-item">
+                <label class="layui-form-label">输入框</label>
+                <div class="layui-input-block">
+                    <input type="text" name="title" required lay-verify="required" placeholder="请输入标题"
+                           autocomplete="off" class="layui-input">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">密码框</label>
+                <div class="layui-input-inline">
+                    <input type="password" name="password" required lay-verify="required" placeholder="请输入密码"
+                           autocomplete="off" class="layui-input">
+                </div>
+                <div class="layui-form-mid layui-word-aux">辅助文字</div>
+            </div>
+
+            <div class="layui-form-item">
+                <label class="layui-form-label">开关</label>
+                <div class="layui-input-block">
+                    <input type="checkbox" name="switch" lay-skin="switch">
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <label class="layui-form-label">单选框</label>
+                <div class="layui-input-block">
+                    <input type="radio" name="sex" value="男" title="男">
+                    <input type="radio" name="sex" value="女" title="女" checked>
+                </div>
+            </div>
+            <div class="layui-form-item layui-form-text">
+                <label class="layui-form-label">文本域</label>
+                <div class="layui-input-block">
+                    <textarea name="desc" placeholder="请输入内容" class="layui-textarea"></textarea>
+                </div>
+            </div>
+            <div class="layui-form-item">
+                <div class="layui-input-block">
+                    <button class="layui-btn" lay-submit lay-filter="formDemo">立即提交</button>
+                    <button type="reset" class="layui-btn layui-btn-primary">重置</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</script>
+<script th:inline="javascript" type="text/javascript">
+
+    layui.use(['layer', 'form'], function () {
+        let layer = layui.layer;
+        let form = layui.form;
+        $("#btn").click(function () {
+            let op = layer.open({// 弹框之后，如遇到select标签，radio,checkbox之类，需要使用表单渲染
+                type: 1,
+                offset: '60px',
+                area: '80%',
+                title: "添加用户",
+                shadeClose: true,// 点击阴影部分是否关闭对话框
+                content: $("#addUserForm").html()  // 就是指的是要把哪段代码片段渲染到对话框之中
+            });
+            form.render();
+        });
+
+    });
+</script>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+server:
+  servlet:
+    context-path: /api #
+
+spring:
+  profiles:
+    active: dev
+  datasource:
+    url: jdbc:mysql://120.25.223.121/shangou_db_test?serverTimezone=Asia/Shanghai
+    password: root
+    username: root
+    #driver-class-name: com.mysql.cj.jdbc.Driver
+  jackson:
+    date-format: yyyy-MM-dd HH:mm #统一返回日志格式（实际工作用这种方式，统一配置）
+mybatis:
+  mapper-locations: classpath*:mybatis/mapper/**/*.xml #mapper
+  configuration:
+    map-underscore-to-camel-case: true
+
+    # log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
+---
+server:
+  port: 8081
+spring:
+  profiles: pro
+
+---
+server:
+  port: 80
+spring:
+  profiles: dev
+logging:
+  level:
+    com.qf.boot.dao: debug
+    com.qf.boot.service.impl: debug
+  file:
+    path: D:/  #输出日志到指定的文件夹
+    max-history: 60  #最大保存日志的多少天
+    name: my-log   #如果配置了名字，它就会按照你的名字给你取日志文件的名字，如果没取名字，那么就会默认叫spring.log
+  pattern:
+    rolling-file-name: my_app_log_%d{yy/MM/dd}.log

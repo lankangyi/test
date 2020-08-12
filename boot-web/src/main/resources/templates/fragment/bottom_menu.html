@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<div th:fragment="wx_menu">
+    <script th:src="@{/jquery/jquery-3.5.1.js}"></script>
+    <style>
+        .wxmenu{
+            flex:1;
+            padding: 10px 20px;
+            border: solid red 10px;
+            text-align: center;
+        }
+        .wxmenu img{
+            width: 30px;
+        }
+        .wxmenu:hover{
+            background: rgb(245,245,245);
+            color: green;
+            cursor: pointer;
+        }
+    </style>
+    <div style="display: flex">
+        <div class="wxmenu">
+            <div>
+                <img th:src="@{/images/weixin/weixin.png}">
+            </div>
+            <div>
+                微信
+            </div>
+        </div>
+        <div class="wxmenu">
+            <div>
+                <img th:src="@{/images/weixin/contact.png}">
+            </div>
+            <div>
+                通讯录
+            </div>
+        </div>
+        <div class="wxmenu">
+            <div>
+                <img th:src="@{/images/weixin/discovery.png}">
+            </div>
+            <div>
+                发现
+            </div>
+        </div>
+        <div class="wxmenu">
+            <div>
+                <img th:src="@{/images/weixin/my.png}">
+            </div>
+            <div>
+                我的
+            </div>
+        </div>
+    </div>
+    <script th:inline="javascript" type="text/javascript">
+        $(function () {
+            $(".wxmenu").click(function () {
+                $(".wxmenu img").each(function () {
+                    this.src = this.src.replace("_green",'');
+                });
+                let img = $(this).find("img");
+                let src = img[0].src;
+                src = src.substring(0, src.lastIndexOf(".")) + '_green.png';
+                img[0].src =src;
+                console.log(src);
+            });
+        });
+    </script>
+</div>
+</html>

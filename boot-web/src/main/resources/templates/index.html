@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>thymeleaf 语法简介</title>
+</head>
+<body>
+<script th:src="@{/jquery/jquery-3.5.1.js}"></script>
+
+<div th:text="${name}"></div>
+<input name="name" th:value="${name}"/>
+<div name="divTest" th:id="'divId-'+${u.userId}" th:tabindex="${uStat.index}" th:each="u:${list}"
+     th:style="'border-top:solid red 1px;color:'+${uStat.index==3?'red':'green'}">
+    <div th:text="${u.nickName}"></div>
+    <div th:text="${u.userId}"></div>
+</div>
+<div th:replace="fragment/bottom_menu::wx_menu"></div>
+
+<script th:inline="javascript" type="text/javascript">
+    let userVOlist = [[${list}]];
+    $(function () {
+        //1.只获取ID
+        // $("[id^=divId-]").click(function () {
+        //     alert(this.id.split('-')[1]);
+        // });
+         $.post('/param/ajaxRequest', {name: "测试名字", age: '18', phone: '182'}, function (res) {
+                         console.log(res);
+           });
+
+        $("[id^=divId-]").click(function () {
+            //2.根据id获取集合中的对象
+            let index = $(this).attr("tabindex");
+            let userVO = userVOlist[index];
+            console.log(userVO);
+        });
+    });
+
+</script>
+</body>
+</html>
